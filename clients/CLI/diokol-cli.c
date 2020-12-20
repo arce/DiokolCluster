@@ -24,20 +24,19 @@ void error(char *msg) {
 }
 
 int main(int argc, char **argv) {
-    int sockfd, portno, n;
+    int sockfd, portno=6453, n, session=0;
     struct sockaddr_in serveraddr;
     struct hostent *server;
-    char *hostname;
+    char* hostname = "127.0.0.1";
     char *buf;
 
-    /* check command line arguments */
-    if (argc != 3) {
-       fprintf(stderr,"usage: %s <hostname> <port>\n", argv[0]);
+    if (argc > 1) session = atoi(argv[1]);
+		if (argc > 2) hostname = argv[2];
+		if (argc > 3) portno = atoi(argv[3]);
+    if (argc > 4) {
+       fprintf(stderr,"usage: %s <session> <hostname> <port>\n", argv[0]);
        exit(0);
     }
-
-    hostname = argv[1];
-    portno = atoi(argv[2]);
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
@@ -48,7 +47,7 @@ int main(int argc, char **argv) {
         fprintf(stderr,"ERROR, no such host as %s\n", hostname);
         exit(0);
     }
-
+			
     bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
     bcopy((char *)server->h_addr,
@@ -57,16 +56,21 @@ int main(int argc, char **argv) {
 
     if (connect(sockfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0)
       error("ERROR connecting");
-
-    do {  
-			  buf = readline("\n>>> ");
-        printf("sending: '%.*s'\n", (int) strlen(buf), buf);
+    
+		char *prompt = (char*)malloc(25 * sizeof(char));
+		sprintf(prompt,"\n%s:%d[%d]> ",hostname,portno,session);
+    while (1) {
+			  buf = readline(prompt);
+				if (!strcmp(buf,"QUIT")) break;
         n = write(sockfd, buf, strlen(buf));
         if (n < 0)
           error("ERROR writing to socket");
 				add_history (buf);
 				free(buf);
-    } while (strcmp(buf,"QUIT"));
+				if (read(sockfd, buf, sizeof(buf)) < 0)
+				    error("ERROR reading from socket");
+				printf("%.*s\n", (int) strlen(buf), buf);
+    }
     close(sockfd);
     return 0;
 }
