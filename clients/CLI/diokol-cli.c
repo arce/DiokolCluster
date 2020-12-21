@@ -1,8 +1,8 @@
 
 /*
- * tcpclient.c - A simple TCP client
+ * diokol-cli.c - Diokol command line interface
  * compile: gcc diokol-cli.c -o diokol-cli -lreadline
- * usage: diokol-cli <host> <port>
+ * usage: diokol-cli <session> <host> <port>
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
        exit(0);
     }
 
+    //sockfd = socket(AF_INET, SOCK_STREAM, 0);
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
         error("ERROR opening socket");
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
     }
 			
     bzero((char *) &serveraddr, sizeof(serveraddr));
-    serveraddr.sin_family = AF_INET;
+		serveraddr.sin_family = AF_INET;
     bcopy((char *)server->h_addr,
 	  (char *)&serveraddr.sin_addr.s_addr, server->h_length);
     serveraddr.sin_port = htons(portno);
@@ -65,7 +66,7 @@ int main(int argc, char **argv) {
         n = write(sockfd, buf, strlen(buf));
         if (n < 0)
           error("ERROR writing to socket");
-				add_history (buf);
+				add_history(buf);
 				free(buf);
 				if (read(sockfd, buf, sizeof(buf)) < 0)
 				    error("ERROR reading from socket");

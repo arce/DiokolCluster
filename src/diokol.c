@@ -28,37 +28,27 @@ int main(int argc , char *argv[])
     }
     puts("Socket created");
      
-    //Prepare the sockaddr_in structure
-    server.sin_family = AF_INET;
+	  server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons( 6453 );
      
-    //Bind
-    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        //print the error message
+    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0) {
         perror("bind failed. Error");
         return 1;
     }
     puts("bind done");
      
-    //Listen
     listen(socket_desc , 3);
-     
-    //Accept and incoming connection
+
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
-     
-     
-    //Accept and incoming connection
+    
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
-	pthread_t thread_id;
+	  pthread_t thread_id;
 	
-    while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
-    {
+    while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ) {
         puts("Connection accepted");
-         
         if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &client_sock) < 0)
         {
             perror("could not create thread");
