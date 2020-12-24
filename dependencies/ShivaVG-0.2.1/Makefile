@@ -1,6 +1,6 @@
 # Linux (default)
 EXE = test_tiger
-LDFLAGS = -lGL -lGLU -lglut -lOpenVG
+LDFLAGS = -lGL -lGLU -lglut -lOpenVG -ldl
 
 # Windows (cygwin)
 ifeq ($(OS), "Windows_NT")
