@@ -1,11 +1,11 @@
 # Linux (default)
 EXE = test_tiger
-LDFLAGS = -lGL -lGLU -lglut -lOpenVG -ldl
+LDFLAGS = -lGL -lGLU -lglut -lOpenVG -lglfw -ldl
 
 # Windows (cygwin)
 ifeq ($(OS), "Windows_NT")
         EXE = test_tiger.exe
-                LDFLAGS = -lopengl32 -lglu32 -lglut32 -lOpenVG
+                LDFLAGS = -lopengl32 -lglu32 -lglut32 -lOpenVG -lglfw
 endif
 
 # OS X
