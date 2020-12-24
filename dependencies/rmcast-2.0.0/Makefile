@@ -1,7 +1,7 @@
 all: rmchat
 
 rmchat: rmchat.o librmcast.a
-	gcc -lm -o rmchat rmchat.o -L. -lrmcast
+	gcc -lm -o rmchat rmchat.o -L. -lrmcast -lpthread
 
 rmchat.o: rmchat.c rmcast.h
 	gcc -O -c rmchat.c
