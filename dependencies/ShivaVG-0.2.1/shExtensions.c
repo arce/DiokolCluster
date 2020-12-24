@@ -74,7 +74,7 @@ void shLoadExtensions(VGContext *c)
    wglMakeCurrent(NULL, NULL);
 #endif
 
-   /*
+	 /*
    glewInit();
 
    if (!GL_VERSION_2_1) {

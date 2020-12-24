@@ -10,17 +10,20 @@ endif
 
 # OS X
 ifeq "$(shell uname)" "Darwin"
-        LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT -lOpenVG
+        LDFLAGS = -framework Carbon -framework OpenGL -lglfw -lOpenVG
 endif
 
 all: test_tiger
 
-test_tiger: test_tiger.o test_tiger_paths.o test.o libOpenVG.a
-	gcc -lm -o test_tiger test.o test_tiger_paths.o -L. $< $(CFLAGS) $(LDFLAGS)
+test_tiger: test_tiger.o glad.o test_tiger_paths.o test.o libOpenVG.a
+	gcc -lm -o test_tiger glad.o test.o test_tiger_paths.o -L. $< $(CFLAGS) $(LDFLAGS)
 
 test_tiger.o: test_tiger.c test_tiger_paths.c
 	gcc -O -c test_tiger.c test_tiger_paths.c -I.
 
+glad.o: glad.c
+	gcc -O -c glad.c -I.
+	
 test.o: test.c test.h
 	gcc -O -c test.c -I.
 	

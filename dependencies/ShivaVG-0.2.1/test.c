@@ -1,9 +1,12 @@
 #include "test.h"
 #include <alloca.h>
+#include <time.h>
 
 
 #ifndef __TEST_H
 #define __TEST_H
+
+GLFWwindow* window;
 
 static int testW = 0;
 static int testH = 0;
@@ -17,6 +20,13 @@ static char *overtext = NULL;
 static float overcolor[4] = { 0, 0, 0, 1 };
 
 static CallbackFunc callbacks[TEST_CALLBACK_COUNT];
+
+int getTime() {
+	struct timespec now;
+	if (clock_gettime(CLOCK_MONOTONIC, &now))
+	    return 0;
+	return ((uint64_t)now.tv_sec) * 1000 + ((uint64_t)now.tv_nsec) / 1000000;
+}
 
 
 /*
@@ -265,6 +275,8 @@ testOverlayString(const char *format, ...)
 void
 testDrawString(float x, float y, const char *format, ...)
 {
+	printf("%s\n",format);
+	/*
    va_list ap, apCopy;
    char *text;
    float k = 0.15;
@@ -323,43 +335,49 @@ testDrawString(float x, float y, const char *format, ...)
    glPopMatrix();
    glDisable(GL_LINE_SMOOTH);
    glDisable(GL_BLEND);
+	*/
 }
 
 void
 testAnimate(void)
 {
-   glutPostRedisplay();
+ //  glutPostRedisplay();
 }
 
 void
 testDisplay(void)
 {
-   DisplayFunc callback = (DisplayFunc) callbacks[TEST_CALLBACK_DISPLAY];
+   //DisplayFunc callback = (DisplayFunc) callbacks[TEST_CALLBACK_DISPLAY];
 
    /* Get interval from last redraw */
-   int now = glutGet(GLUT_ELAPSED_TIME);
+   int now = getTime();
    if (!timeinit)
       lastdraw = now;
    unsigned int msinterval = (unsigned int) (now - lastdraw);
    float interval = (float) msinterval / 1000;
    lastdraw = now;
 
-   /* Draw scene */
+   /* Draw scene 
    if (callback)
       (*callback) (interval);
+	  */
 
-   /* Draw overlay text */
+   display(interval);
+   /* Draw overlay text
    if (overtext != NULL) {
       glColor4fv(overcolor);
       testDrawString(10, testHeight() - 25, overtext);
    }
-
+   */
    /* Draw fps */
-   glColor4fv(overcolor);
-   testDrawString(10, 10, "FPS: %d", fpsdraw);
+   //glColor4fv(overcolor);
+   //testDrawString(10, 10, "FPS: %d", fpsdraw);
+	 
+	 //  printf("FPS: %d\n", fpsdraw);
 
    /* Swap */
-   glutSwapBuffers();
+   //glutSwapBuffers();
+	 //glfwSwapBuffers(window);
 
    /* Count frames per second */
    ++fps;
@@ -475,14 +493,48 @@ testHeight()
    return testH;
 }
 
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 void
 testInit(int argc, char **argv, int w, int h, const char *title)
 {
+
+  glfwSetErrorCallback(error_callback);
+
+  if (!glfwInit())
+      exit(EXIT_FAILURE);
+
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+
+  window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+  if (!window)
+  {
+      glfwTerminate();
+      exit(EXIT_FAILURE);
+  }
+
+  glfwSetKeyCallback(window, key_callback);
+
+  glfwMakeContextCurrent(window);
+  //gladLoadGL(glfwGetProcAddress);
+	gladLoadGL();
+  glfwSwapInterval(1);
+	
+	/*
    int i;
    glutInit(&argc, argv);
 
 #if defined(__APPLE__) || defined(WIN32)
-   /*glutInitDisplayString("rgba alpha double stencil samples=4"); */
    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA |
                        GLUT_STENCIL | GLUT_MULTISAMPLE);
 #else
@@ -503,21 +555,39 @@ testInit(int argc, char **argv, int w, int h, const char *title)
    glutMotionFunc(testDrag);
    glutPassiveMotionFunc(testMove);
    atexit(testCleanup);
-
+ */
+	
    vgCreateContextSH(w, h);
 
    testW = w;
    testH = h;
 
-   for (i = 0; i < TEST_CALLBACK_COUNT; ++i)
+   for (int i = 0; i < TEST_CALLBACK_COUNT; ++i)
       callbacks[i] = NULL;
 
 }
 
 void
-testRun()
-{
-   glutMainLoop();
+testRun() {
+	
+  //  glutMainLoop();
+  while (!glfwWindowShouldClose(window)) {
+    int width, height;
+
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+		
+		testDisplay();
+			
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+	}
+	
+  glfwDestroyWindow(window);
+
+  glfwTerminate();
+  exit(EXIT_SUCCESS);
 }
 
 #endif // end __TEST_H
