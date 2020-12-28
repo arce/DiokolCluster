@@ -1,6 +1,6 @@
 CC = gcc
 # Linux (default)
-LDFLAGS = -lGL -lGLU -lglut -lpthread -lluajit -ldl -lm
+LDFLAGS = -lGL -lGLU -lglut -lpthread -lluajit -ldl -lm -lrmcast
 #CFLAGS = -w -std=gnu99 -m32
 CFLAGS =
 

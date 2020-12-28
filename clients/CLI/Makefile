@@ -1,6 +1,6 @@
 CC = gcc
 # Linux (default)
-LDFLAGS = -lGL -lGLU -lglut -ldl -lpthread -lluajit -lreadline -ldl -lm
+LDFLAGS = -lGL -lGLU -lglut -ldl -lpthread -lluajit -lreadline -ldl -lm -lrmcast
 #CFLAGS = -w -std=gnu99 -m32
 CFLAGS =
 
@@ -16,7 +16,7 @@ endif
 
 # OS X
 ifeq "$(UNAME)" "Darwin"
-  LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT -lluajit -lreadline -pagezero_size 10000 -image_base 100000000
+  LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT -lluajit -lreadline -lrmcast -pagezero_size 10000 -image_base 100000000
   CFLAGS += -D__APPLE__
 endif
 
