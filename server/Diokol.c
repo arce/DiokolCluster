@@ -6,6 +6,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <ifaddrs.h>
+
 #include <lua/lauxlib.h>
 #include <lua/lua.h>
 #include <lua/lualib.h>
@@ -15,6 +17,27 @@
 
 int status, result;
 lua_State *L[MAX_STATES];
+
+void lookup_host() {
+  struct ifaddrs * ifAddrStruct=NULL;
+  struct ifaddrs * ifa=NULL;
+  void * tmpAddrPtr=NULL;
+
+  getifaddrs(&ifAddrStruct);
+
+  for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+      if (!ifa->ifa_addr) {
+          continue;
+      }
+      if (ifa->ifa_addr->sa_family == AF_INET) {
+          tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+          char addressBuffer[INET_ADDRSTRLEN];
+          inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+          printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+      }
+  }
+  if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+}
 
 void *connection_handler(void *);
 
@@ -43,6 +66,9 @@ int main(int argc, char *argv[]) {
   listen(socket_desc, 3);
 
   puts("Waiting for incoming connections...");
+	
+	lookup_host();
+	
   c = sizeof(struct sockaddr_in);
   pthread_t thread_id;
 
