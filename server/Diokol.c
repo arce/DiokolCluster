@@ -1,9 +1,3 @@
-/*
-    C socket server example, handles multiple clients using threads
-    Compile
-    gcc diokol.c -o diokol -lpthread
-*/
-
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <stdio.h>
@@ -33,8 +27,8 @@ int main(int argc, char *argv[]) {
     printf("Could not create socket");
   }
   puts("Socket created");
-	
-	bzero(L, MAX_STATES*sizeof(void*));
+
+  bzero(L, MAX_STATES * sizeof(void *));
 
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = INADDR_ANY;
@@ -47,9 +41,6 @@ int main(int argc, char *argv[]) {
   puts("bind done");
 
   listen(socket_desc, 3);
-
-  puts("Waiting for incoming connections...");
-  c = sizeof(struct sockaddr_in);
 
   puts("Waiting for incoming connections...");
   c = sizeof(struct sockaddr_in);
@@ -107,15 +98,15 @@ void *connection_handler(void *socket_desc) {
       return NULL;
     }
     sid = (int)lnum;
-		
-		if (L[sid]==NULL) {
-		  L[sid] = luaL_newstate();
-		  luaL_openlibs(L[sid]);
-		}
+
+    if (L[sid] == NULL) {
+      L[sid] = luaL_newstate();
+      luaL_openlibs(L[sid]);
+    }
 
     token = strtok(NULL, "\n");
     if (strcmp(token, "VGTP/0.1") != 0 || token == NULL) {
-      write(sock, "Error: invalid protocol", 16);
+      write(sock, "ERROR: invalid protocol", 16);
       return NULL;
     }
 
