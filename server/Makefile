@@ -1,6 +1,6 @@
 CC = gcc
 # Linux (default)
-LDFLAGS = -lGL -lGLU -lglut -lm -lpthread -lluajit
+LDFLAGS = -lGL -lGLU -lglut -ldl -lpthread -lluajit
 #CFLAGS = -w -std=gnu99 -m32
 CFLAGS = -lm
 
@@ -10,8 +10,9 @@ UNAME := $(shell uname)
 
 # Windows (cygwin)
 ifeq "$(OS)" "Windows_NT"
+  CC = x86_64-w64-mingw32-gcc
   LDFLAGS = -lopengl32 -lwinmm -lgdi32 -lws2_32 -lglu32 -lglut32 -lluajit
-  CFLAGS += -D_WIN32
+  CFLAGS += -D_WIN32 -Wl,-subsystem,windows
 endif
 
 # OS X
