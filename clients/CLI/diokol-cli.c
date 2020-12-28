@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 	
 	char *prompt = (char *)malloc(128 * sizeof(char));
   while (1) {
-	  sprintf(prompt, "\n%s:%d[%d]> ", hostname, portno, session);
+	  sprintf(prompt, "\n%s:%d[%d]> ", hostname, portno, sid);
     command = readline(prompt);
     if (!strcmp(command, "QUIT"))
       break;
