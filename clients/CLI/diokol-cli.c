@@ -16,11 +16,17 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#define BUFSIZE 1024
+#define MAX_BUFFER 65536
 
 void error(char *msg) {
     perror(msg);
     exit(0);
+}
+
+int startsWith(const char *pre, const char *str) {
+    size_t lenpre = strlen(pre),
+           lenstr = strlen(str);
+    return lenstr < lenpre ? 0 : memcmp(pre, str, lenpre) == 0;
 }
 
 int main(int argc, char **argv) {
@@ -28,7 +34,12 @@ int main(int argc, char **argv) {
     struct sockaddr_in serveraddr;
     struct hostent *server;
     char* hostname = "127.0.0.1";
-    char *buf;
+    char request[MAX_BUFFER], *command;
+		char response[MAX_BUFFER];
+		char ID[10];
+	  long lnum;
+	  int sid=0;
+	  char *end;
 
     if (argc > 1) session = atoi(argv[1]);
 		if (argc > 2) hostname = argv[2];
@@ -58,19 +69,40 @@ int main(int argc, char **argv) {
     if (connect(sockfd, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0)
       error("ERROR connecting");
     
-		char *prompt = (char*)malloc(25 * sizeof(char));
+		using_history();
+		char *prompt = (char*)malloc(128 * sizeof(char));
 		sprintf(prompt,"\n%s:%d[%d]> ",hostname,portno,session);
     while (1) {
-			  buf = readline(prompt);
-				if (!strcmp(buf,"QUIT")) break;
-        n = write(sockfd, buf, strlen(buf));
+			  command = readline(prompt);
+				if (!strcmp(command,"QUIT")) break;
+				if (startsWith("SESSION",command)) {
+					char *token = strtok(command," ");
+					token = strtok(NULL,"");
+					if (token==NULL) {
+						printf("ERROR: session ID not found\n");
+						continue;
+					}
+					printf("%s\n",token);
+					strcpy(ID,token);
+					lnum = strtol(ID, &end, 10);
+			    if (end == token) {
+			      printf("ERROR: invalid session ID\n");
+			      continue;
+			    }
+			    sid = (int)lnum;
+					printf("OK");
+					continue;
+				}
+				sprintf(request,"SESSION %d VGTP/0.1\n %s",sid,command);
+        n = write(sockfd, request, strlen(request));
         if (n < 0)
-          error("ERROR writing to socket");
-				add_history(buf);
-				free(buf);
-				if (read(sockfd, buf, sizeof(buf)) < 0)
-				    error("ERROR reading from socket");
-				printf("%.*s\n", (int) strlen(buf), buf);
+          error("ERROR: writing to server");
+				add_history(command);
+				free(command);
+				bzero(response,MAX_BUFFER);
+				if (read(sockfd, response, MAX_BUFFER) < 0)
+				    error("ERROR: reading from server");
+				printf("%s", response);
     }
     close(sockfd);
     return 0;
