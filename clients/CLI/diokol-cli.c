@@ -4,6 +4,7 @@
  */
 #include <netdb.h>
 #include <netinet/in.h>
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +23,8 @@ int sockfd = 0, portno = 6453, n, session = 0;
 struct sockaddr_in serveraddr;
 struct hostent *server;
 char *hostname = "127.0.0.1";
-bool multicast;
+bool multicast = false;
+pthread_t tid;
 
 int cliSock;
 
@@ -36,8 +38,9 @@ void callback_term(void) {
   exit(EXIT_SUCCESS);
 }
 
-int connectMulticast() {
-  if (!RM_readConfigFile("diokol.config", true)) {
+int connectMultiHost() {
+
+  if (!RM_readConfigFile("diokol.config", false)) {
     fprintf(stderr, "Error: Couldn't read config file diokol.config\n");
     exit(EXIT_FAILURE);
   }
@@ -47,6 +50,29 @@ int connectMulticast() {
   sockfd = RM_joinGroup((char *)RM_USE_CURRENT_CONFIG, RM_USE_CURRENT_CONFIG);
 
   return 1;
+}
+
+#define BUFFSIZE 200
+int end = 0;
+
+void *ReceivePacket(void *arg) {
+	
+  char receive_buffer[BUFFSIZE];
+  int bytes_read;
+
+  while (!end) {
+		if (!multicast||sockfd==0) continue;
+    if ((bytes_read = RM_recv(sockfd, receive_buffer, BUFFSIZE)) > 0) {
+      /* We have received data from the network, show it to the user */
+      fprintf(stdout, "\n%s>", receive_buffer);
+      fflush(stdout);
+    } else {
+      fprintf(stderr, "[ReceivePacket Error]: receiving data.\n");
+      break;
+    }
+  }
+
+  return 0;
 }
 
 int connectHost(char *hostname) {
@@ -88,23 +114,12 @@ int main(int argc, char **argv) {
   int sid = 0;
   char *end;
   char ID[6];
+  tid = 0;
 
-  if (argc > 1)
-    sid = atoi(argv[1]);
-  if (argc > 2)
-    hostname = argv[2];
-  if (argc > 3)
-    portno = atoi(argv[3]);
-  if (argc > 4) {
-    fprintf(stderr, "usage: %s <session> <hostname> <port>\n", argv[0]);
-    exit(0);
-  }
-
-  connectMulticast();
-
-  if (!connectHost(hostname)) {
-    fprintf(stderr, "Error: connecting server\n");
-    exit(0);
+  if (pthread_create(&tid, NULL, ReceivePacket, NULL) != 0) {
+    /* Error, terminate the application */
+    fprintf(stderr, "[rmchat Error]: Could not create Receive Thread\n");
+    RM_leaveGroup(sockfd, (char *)RM_USE_CURRENT_CONFIG);
   }
 
   using_history();
@@ -125,6 +140,13 @@ int main(int argc, char **argv) {
       strcpy(hostname, token);
       if (connectHost(hostname))
         printf("OK");
+      multicast = false;
+      continue;
+    }
+    if (strcpy("MULTIHOST", command) == 0) {
+      if (connectMultiHost())
+        printf("OK");
+      multicast = true;
       continue;
     }
     if (startsWith("SESSION", command)) {
@@ -145,21 +167,24 @@ int main(int argc, char **argv) {
       continue;
     }
     sprintf(request, "SESSION %d VGTP/0.1\n %s", sid, command);
-    if (multicast)
-      RM_sendto(sockfd, request, strlen(request));
-    else
-      n = write(sockfd, request, strlen(request));
-    if (n < 0)
-      fprintf(stderr, "ERROR: writing to server");
-    add_history(command);
-    free(command);
-    bzero(response, MAX_BUFFER);
-    if (!multicast) {
-      if (read(sockfd, response, MAX_BUFFER) < 0)
-        fprintf(stderr, "ERROR: reading from server");
-      printf("%s",response);
-    } else
-      printf("OK");
+    if (sockfd != 0) {
+      if (multicast)
+        RM_sendto(sockfd, request, strlen(request));
+      else {
+        n = write(sockfd, request, strlen(request));
+        if (n < 0)
+          fprintf(stderr, "ERROR: writing to server");
+      }
+      bzero(response, MAX_BUFFER);
+      if (!multicast) {
+        if (read(sockfd, response, MAX_BUFFER) < 0)
+          fprintf(stderr, "ERROR: reading from server");
+        printf("%s", response);
+      } else
+        printf("OK");
+      add_history(command);
+      free(command);
+    }
   }
   close(sockfd);
   return 0;
