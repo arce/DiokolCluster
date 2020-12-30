@@ -360,7 +360,7 @@ endif
 
 MINILUA_O= host/minilua.o
 MINILUA_LIBS= -lm
-MINILUA_T= host/minilua
+MINILUA_T= host/minilua.bin
 MINILUA_X= $(MINILUA_T)
 
 ifeq (,$(HOST_LUA))
@@ -442,7 +442,7 @@ DASM_DASC= vm_$(DASM_ARCH).dasc
 
 BUILDVM_O= host/buildvm.o host/buildvm_asm.o host/buildvm_peobj.o \
 	   host/buildvm_lib.o host/buildvm_fold.o
-BUILDVM_T= host/buildvm
+BUILDVM_T= host/buildvm.bin
 BUILDVM_X= $(BUILDVM_T)
 
 HOST_O= $(MINILUA_O) $(BUILDVM_O)

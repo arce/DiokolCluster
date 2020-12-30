@@ -23,8 +23,8 @@ endif
 
 all : Diokol.bin
 
-Diokol : Diokol.c
+Diokol.bin : Diokol.c
 	$(CC) $(CFLAGS) Diokol.c -o Diokol.bin -L../lib -I../include $(LDFLAGS)
 
 clean :
-	$(RM) *.o $(PROG) *.*~
+	rm -f Diokol.bin
