@@ -1,10 +1,10 @@
-all: rmchat
+all: librmcast.a
 
-rmchat: rmchat.o librmcast.a
-	gcc -o rmchat rmchat.o -L. -lrmcast -lpthead -lm
+#rmchat: rmchat.o librmcast.a
+#	gcc -o rmchat rmchat.o -L. -lrmcast -lpthead -lm
 
-rmchat.o: rmchat.c rmcast.h
-	gcc -O -c rmchat.c
+#rmchat.o: rmchat.c rmcast.h
+#	gcc -O -c rmchat.c
 
 rmcache.o: rmcache.c rmcache.h
 	gcc -O -c rmcache.c
