@@ -477,9 +477,9 @@ LIB_VMDEF= jit/vmdef.lua
 LIB_VMDEFP= $(LIB_VMDEF)
 
 LUAJIT_O= luajit.o
-LUAJIT_A= libluajit.a
+LUAJIT_A= ../../../lib/libluajit.a
 LUAJIT_SO= libluajit.so
-LUAJIT_T= luajit
+LUAJIT_T= luajit.bin
 
 ALL_T= $(LUAJIT_T) $(LUAJIT_A) $(LUAJIT_SO) $(HOST_T)
 ALL_HDRGEN= lj_bcdef.h lj_ffdef.h lj_libdef.h lj_recdef.h lj_folddef.h \
@@ -531,8 +531,8 @@ ifeq (Windows,$(HOST_SYS))
   MINILUA_T= host/minilua.exe
   BUILDVM_T= host/buildvm.exe
   ifeq (,$(HOST_MSYS))
-    MINILUA_X= host\minilua
-    BUILDVM_X= host\buildvm
+    MINILUA_X= host\minilua.bin
+    BUILDVM_X= host\buildvm.bin
     ALL_RM:= $(subst /,\,$(ALL_RM))
   endif
 endif
