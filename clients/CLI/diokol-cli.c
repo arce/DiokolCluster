@@ -17,7 +17,7 @@
 #include <readline/readline.h>
 
 #define MAX_BUFFER 65536
-int sockfd = 0, portno = 6453, n, session = 0;
+int sockfd = 0, portno = 6453, session = 0;
 struct sockaddr_in serveraddr;
 struct hostent *server;
 char *hostname = NULL;
