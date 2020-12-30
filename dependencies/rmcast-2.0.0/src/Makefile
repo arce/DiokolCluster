@@ -31,7 +31,7 @@ rmwcast.o: rmwcast.c rmwcast.h
 		gcc -O -c rmwcast.c
 		
 librmcast.a: rmcache.o rmevent.o rminternals.o rmmsg.o rmmsgpckt.o rmtcp.o rmwinmask.o rmcast.o
-	ar rcs librmcast.a rmcache.o rmevent.o rminternals.o rmmsg.o rmmsgpckt.o rmtcp.o rmwinmask.o rmcast.o
+	ar rcs ../../../lib/librmcast.a rmcache.o rmevent.o rminternals.o rmmsg.o rmmsgpckt.o rmtcp.o rmwinmask.o rmcast.o
 
 libs: librmcast.a
 
