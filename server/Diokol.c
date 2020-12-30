@@ -86,14 +86,14 @@ void process_request(char *request, int sock) {
   char *token = strtok(request, " ");
 
   if (strcmp(token, "SESSION") != 0 || token == NULL) {
-    if (!sock)
+    if (sock)
       write(sock, "ERROR: invalid header", 12);
     return;
   }
 
   token = strtok(NULL, " ");
   if (token == NULL) {
-    if (!sock)
+    if (sock)
       write(sock, "ERROR: session ID not found", 16);
     return;
   }
@@ -102,7 +102,7 @@ void process_request(char *request, int sock) {
   lnum = strtol(session, &end, 10);
 
   if (end == token) {
-    if (!sock)
+    if (sock)
       write(sock, "ERROR: invalid session ID", 25);
     return;
   }
@@ -111,7 +111,7 @@ void process_request(char *request, int sock) {
   token = strtok(NULL, "\n");
 
   if (strcmp(token, "VGTP/0.1") != 0 || token == NULL) {
-    if (!sock)
+    if (sock)
       write(sock, "ERROR: invalid protocol", 16);
     return;
   }

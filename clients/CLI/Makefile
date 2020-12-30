@@ -16,7 +16,7 @@ endif
 
 # OS X
 ifeq "$(UNAME)" "Darwin"
-  LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT -lluajit -lreadline -lrmcast -pagezero_size 10000 -image_base 100000000
+  LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT -lluajit -lreadline -pagezero_size 10000 -image_base 100000000
   CFLAGS += -D__APPLE__
 endif
 
