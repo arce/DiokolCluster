@@ -131,12 +131,9 @@ void *group_handler(void *arg) {
   int n;
 
   while (true) {
-    if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {
-      fprintf( stdout,"\n%s>", request );
-      fflush( stdout );
-			
-      //request[n] = '\0';
-      //process_request(request, 0);
+    if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {			
+      request[n] = '\0';
+      process_request(request, 0);
     } else {
       fprintf(stderr, "[ReceivePacket Error]: receiving data.\n");
       break;
