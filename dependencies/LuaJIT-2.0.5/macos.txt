@@ -1,2 +1,0 @@
-export MACOSX_DEPLOYMENT_TARGET=10.15.6
-make

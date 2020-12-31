@@ -360,7 +360,7 @@ endif
 
 MINILUA_O= host/minilua.o
 MINILUA_LIBS= -lm
-MINILUA_T= host/minilua.bin
+MINILUA_T= host/minilua
 MINILUA_X= $(MINILUA_T)
 
 ifeq (,$(HOST_LUA))
@@ -442,7 +442,7 @@ DASM_DASC= vm_$(DASM_ARCH).dasc
 
 BUILDVM_O= host/buildvm.o host/buildvm_asm.o host/buildvm_peobj.o \
 	   host/buildvm_lib.o host/buildvm_fold.o
-BUILDVM_T= host/buildvm.bin
+BUILDVM_T= host/buildvm
 BUILDVM_X= $(BUILDVM_T)
 
 HOST_O= $(MINILUA_O) $(BUILDVM_O)
@@ -477,9 +477,9 @@ LIB_VMDEF= jit/vmdef.lua
 LIB_VMDEFP= $(LIB_VMDEF)
 
 LUAJIT_O= luajit.o
-LUAJIT_A= ../../../lib/libluajit.a
+LUAJIT_A= libluajit.a
 LUAJIT_SO= libluajit.so
-LUAJIT_T= luajit.bin
+LUAJIT_T= luajit
 
 ALL_T= $(LUAJIT_T) $(LUAJIT_A) $(LUAJIT_SO) $(HOST_T)
 ALL_HDRGEN= lj_bcdef.h lj_ffdef.h lj_libdef.h lj_recdef.h lj_folddef.h \
@@ -531,8 +531,8 @@ ifeq (Windows,$(HOST_SYS))
   MINILUA_T= host/minilua.exe
   BUILDVM_T= host/buildvm.exe
   ifeq (,$(HOST_MSYS))
-    MINILUA_X= host\minilua.bin
-    BUILDVM_X= host\buildvm.bin
+    MINILUA_X= host\minilua
+    BUILDVM_X= host\buildvm
     ALL_RM:= $(subst /,\,$(ALL_RM))
   endif
 endif

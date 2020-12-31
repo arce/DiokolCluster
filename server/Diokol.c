@@ -58,7 +58,7 @@ void execute_command(char *command, int sid, int sock) {
   int status = luaL_loadstring(L[sid], command);
 
   if (status) {
-    if (!sock) {
+    if (sock != 0) {
       int n = strlen(lua_tostring(L[sid], -1));
       strcpy(message, lua_tostring(L[sid], -1));
       write(sock, message, n);
@@ -67,7 +67,7 @@ void execute_command(char *command, int sid, int sock) {
   }
 
   int result = lua_pcall(L[sid], 0, LUA_MULTRET, 0);
-  if (!sock) {
+  if (sock != 0) {
     if (result)
       write(sock, lua_tostring(L[sid], -1), strlen(lua_tostring(L[sid], -1)));
     else
@@ -86,14 +86,14 @@ void process_request(char *request, int sock) {
   char *token = strtok(request, " ");
 
   if (strcmp(token, "SESSION") != 0 || token == NULL) {
-    if (sock)
+    if (sock != 0)
       write(sock, "ERROR: invalid header", 12);
     return;
   }
 
   token = strtok(NULL, " ");
   if (token == NULL) {
-    if (sock)
+    if (sock != 0)
       write(sock, "ERROR: session ID not found", 16);
     return;
   }
@@ -102,7 +102,7 @@ void process_request(char *request, int sock) {
   lnum = strtol(session, &end, 10);
 
   if (end == token) {
-    if (sock)
+    if (sock != 0)
       write(sock, "ERROR: invalid session ID", 25);
     return;
   }
@@ -111,7 +111,7 @@ void process_request(char *request, int sock) {
   token = strtok(NULL, "\n");
 
   if (strcmp(token, "VGTP/0.1") != 0 || token == NULL) {
-    if (sock)
+    if (sock != 0)
       write(sock, "ERROR: invalid protocol", 16);
     return;
   }
@@ -130,9 +130,17 @@ void *group_handler(void *arg) {
   char request[MAX_BUFFER];
   int n;
 
-  while ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {
-    request[n] = '\0';
-    process_request(request, 0);
+  while (true) {
+    if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {
+      fprintf( stdout,"\n%s>", request );
+      fflush( stdout );
+			
+      //request[n] = '\0';
+      //process_request(request, 0);
+    } else {
+      fprintf(stderr, "[ReceivePacket Error]: receiving data.\n");
+      break;
+    }
   }
 
   return 0;
@@ -160,7 +168,7 @@ void callback_term(void) {
 }
 
 void multicast_initialize() {
-  if (!RM_readConfigFile("diokol.config", false)) {
+  if (!RM_readConfigFile("diokol.config", true)) {
     perror("Couldn't read config file diokol.config\n");
     exit(EXIT_FAILURE);
   }
@@ -195,17 +203,18 @@ void unicast_initialize() {
 
 int main(int argc, char *argv[]) {
   int client_sock;
-	struct sockaddr_in client;
+  struct sockaddr_in client;
 
   unicast_initialize();
   multicast_initialize();
+	
   lookup_host();
 
   int c = sizeof(struct sockaddr_in);
   pthread_t tid;
 
   if (pthread_create(&tid, NULL, group_handler, NULL) != 0) {
-    perror("Error: group thread failed");
+    fprintf( stderr,"Error: group thread failed");
     RM_leaveGroup(group_sock, (char *)RM_USE_CURRENT_CONFIG);
   }
 

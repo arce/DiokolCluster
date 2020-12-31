@@ -21,10 +21,10 @@ ifeq "$(UNAME)" "Darwin"
   CFLAGS += -D__APPLE__
 endif
 
-all : Diokol.bin
+all : diokol
 
-Diokol.bin : Diokol.c
-	$(CC) $(CFLAGS) Diokol.c -o Diokol.bin -L../lib -I../include $(LDFLAGS)
+diokol: diokol.c
+	$(CC) $(CFLAGS) diokol.c -o diokol -L../lib -I../include $(LDFLAGS)
 
 clean :
-	rm -f Diokol.bin
+	rm -f diokol
