@@ -133,6 +133,7 @@ void *group_handler(void *arg) {
   while (true) {
     if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {			
       request[n] = '\0';
+			printf("group: %s\n",request);
       process_request(request, 0);
     } else {
       fprintf(stderr, "[ReceivePacket Error]: receiving data.\n");
@@ -153,6 +154,7 @@ void *client_handler(void *socket_desc) {
   while ((n = recv(client_sock, request, MAX_BUFFER, 0)) > 0) {
     request[n] = '\0';
 		strcpy(buffer,request);
+		printf("client: %s\n",request);
     process_request(request, client_sock);
     if (multicast)
       resend_request(buffer);
