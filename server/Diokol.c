@@ -150,13 +150,15 @@ void *client_handler(void *socket_desc) {
 
   int client_sock = *(int *)socket_desc;
   char request[MAX_BUFFER];
+	char buffer[MAX_BUFFER];
   int n;
 
   while ((n = recv(client_sock, request, MAX_BUFFER, 0)) > 0) {
     request[n] = '\0';
+		strcpy(buffer,request);
     process_request(request, client_sock);
     if (multicast)
-      resend_request(request);
+      resend_request(buffer);
   }
 
   return 0;

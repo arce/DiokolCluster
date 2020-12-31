@@ -21,6 +21,7 @@ int sockfd = 0, portno = 6453, session = 0;
 struct sockaddr_in serveraddr;
 struct hostent *server;
 char *hostname = NULL;
+int n=0;
 
 int startsWith(const char *pre, const char *str) {
   size_t lenpre = strlen(pre), lenstr = strlen(str);
