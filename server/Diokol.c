@@ -22,7 +22,7 @@ int status, result;
 lua_State *L[MAX_STATES];
 
 int server_sock, group_sock;
-bool multicast = false;
+bool multicast = true;
 
 void lookup_host() {
   struct ifaddrs *ifAddrStruct = NULL;
