@@ -22,7 +22,7 @@ int status, result;
 lua_State *L[MAX_STATES];
 
 int server_sock, group_sock;
-bool multicast = true;
+int multicast = 0;
 
 void lookup_host() {
   struct ifaddrs *ifAddrStruct = NULL;
@@ -46,6 +46,8 @@ void lookup_host() {
     freeifaddrs(ifAddrStruct);
 }
 
+void luaRegisterAPI() {};
+
 void execute_command(char *command, int sid, int sock) {
 
   char message[256];
@@ -53,6 +55,7 @@ void execute_command(char *command, int sid, int sock) {
   if (L[sid] == NULL) {
     L[sid] = luaL_newstate();
     luaL_openlibs(L[sid]);
+		luaRegisterAPI();
   }
 
   int status = luaL_loadstring(L[sid], command);
@@ -131,9 +134,8 @@ void *group_handler(void *arg) {
   int n;
 
   while (true) {
-    if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {			
+    if ((n = RM_recv(group_sock, request, MAX_BUFFER)) > 0) {
       request[n] = '\0';
-			printf("group: %s\n",request);
       process_request(request, 0);
     } else {
       fprintf(stderr, "[ReceivePacket Error]: receiving data.\n");
@@ -148,16 +150,15 @@ void *client_handler(void *socket_desc) {
 
   int client_sock = *(int *)socket_desc;
   char request[MAX_BUFFER];
-	char buffer[MAX_BUFFER];
+  char buffer[MAX_BUFFER];
   int n;
 
   while ((n = recv(client_sock, request, MAX_BUFFER, 0)) > 0) {
     request[n] = '\0';
-		strcpy(buffer,request);
-		printf("client: %s\n",request);
-    process_request(request, client_sock);
-    if (multicast)
+    strcpy(buffer, request);
+    if (multicast == 0)
       resend_request(buffer);
+    process_request(request, client_sock);
   }
 
   return 0;
@@ -174,10 +175,14 @@ void multicast_initialize() {
     exit(EXIT_FAILURE);
   }
 
-  RM_initialize((void *)callback_term);
+  RM_getOption(TRANSMISSION_MODE, (void *)&multicast);
 
-  group_sock =
-      RM_joinGroup((char *)RM_USE_CURRENT_CONFIG, RM_USE_CURRENT_CONFIG);
+  if (multicast == 0) {
+    RM_initialize((void *)callback_term);
+
+    group_sock =
+        RM_joinGroup((char *)RM_USE_CURRENT_CONFIG, RM_USE_CURRENT_CONFIG);
+  }
 }
 
 void unicast_initialize() {
@@ -208,16 +213,17 @@ int main(int argc, char *argv[]) {
 
   unicast_initialize();
   multicast_initialize();
-	
+
   lookup_host();
 
   int c = sizeof(struct sockaddr_in);
   pthread_t tid;
 
-  if (pthread_create(&tid, NULL, group_handler, NULL) != 0) {
-    fprintf( stderr,"Error: group thread failed");
-    RM_leaveGroup(group_sock, (char *)RM_USE_CURRENT_CONFIG);
-  }
+  if (multicast == 0)
+    if (pthread_create(&tid, NULL, group_handler, NULL) != 0) {
+      fprintf(stderr, "Error: group thread failed");
+      RM_leaveGroup(group_sock, (char *)RM_USE_CURRENT_CONFIG);
+    }
 
   while ((client_sock = accept(server_sock, (struct sockaddr *)&client,
                                (socklen_t *)&c))) {

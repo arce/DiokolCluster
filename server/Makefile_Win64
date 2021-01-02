@@ -1,0 +1,5 @@
+CC= x86_64-w64-mingw32-gcc
+
+LDFLAGS = -lopengl32 -lglu32 -lgdi32 -lOpenVG -lglut -llua51 -Wl,-subsystem,windows -L./lib/win64 -I./include -w
+
+all: diokol
