@@ -6,7 +6,7 @@
 
 // Example 4-2: Using variables
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 // Declare and initialize two integer variables at the top of the code.
 int circleX = 100;
@@ -25,8 +25,7 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
-  setup();
-
   pg.listen();
 }

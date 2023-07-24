@@ -6,7 +6,7 @@
 
 // Example 5-8: Square following edge, uses a "state" variable
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 int x = 0;  // x location of square
 int y = 0;  // y location of square
@@ -60,8 +60,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+
+	pg.setupFunc(setup);
   pg.drawFunc(draw);
-  setup();
 
   pg.listen();
 }

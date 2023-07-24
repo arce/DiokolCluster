@@ -6,7 +6,7 @@
 
 // Example 5-5: Button as switch
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 bool button = false;
 
@@ -39,9 +39,10 @@ void mousePressed() {
 }
 
 int main(int argc, char** argv) {
+
+	pg.setupFunc(setup);
   pg.drawFunc(draw);
   pg.mousePressedFunc(mousePressed);
-  setup();
   
   pg.listen();
 }

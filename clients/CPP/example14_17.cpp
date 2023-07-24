@@ -1,4 +1,4 @@
-#include "p5lib.h"
+#include "p5d.h"
 
 // Learning Processing
 // Daniel Shiffman
@@ -9,46 +9,50 @@
 // Global angle for rotation
 float theta = 0;
 
+p5d::PGraphics pg("localhost", "8888");
+
 void setup() {
-  p5_size(480, 270);
-  p5_frameRate(10);
+  pg.size(480, 270);
+  pg.frameRate(10);
 }
 
 void draw() {
-  p5_background(255);
-  p5_stroke(0);
+  pg.background(255);
+  pg.stroke(0);
 
   // Translate to center of window
-  p5_translate(p5_width/2, p5_height/2);
+  pg.translate(pg.width / 2, pg.height / 2);
 
   // Loop from 0 to 360 degrees (2*PI radians)
-  for (float i = 0; i < P5_TWO_PI; i += 0.2) {
+  for (float i = 0; i < pg.TWO_PI; i += 0.2) {
 
     // Push, rotate and draw a line!
-    // The transformation state is saved at the beginning of each cycle through the for loop and restored at the enpg. 
-    // Try commenting out these lines to see the difference!
-    p5_pushMatrix(); 
-    p5_rotate(theta + i);
-    p5_line(0, 0, 100, 0);
+    // The transformation state is saved at the beginning of each cycle through
+    // the for loop and restored at the enpg. Try commenting out these lines to
+    // see the difference!
+    pg.pushMatrix();
+    pg.rotate(theta + i);
+    pg.line(0, 0, 100, 0);
 
     // Loop from 0 to 360 degrees (2*PI radians)
-    for (float j = 0; j < P5_TWO_PI; j += 0.5) {
+    for (float j = 0; j < pg.TWO_PI; j += 0.5) {
       // Push, translate, rotate and draw a line!
-      p5_pushMatrix();
-      p5_translate(100, 0);
-      p5_rotate(-theta-j);
-      p5_line(0, 0, 50, 0);
+      pg.pushMatrix();
+      pg.translate(100, 0);
+      pg.rotate(-theta - j);
+      pg.line(0, 0, 50, 0);
       // We're done with the inside loop, pop!
-      p5_popMatrix();
+      pg.popMatrix();
     }
 
     // We're done with the outside loop, pop!
-    p5_popMatrix();
+    pg.popMatrix();
   }
 }
 
-int main(int argc, char** argv) {
-  p5_setupFunc(setup);
-  p5_drawFunc(draw);
-  p5_init(argc,argv);
+int main(int argc, char **argv) {
+  pg.setupFunc(setup);
+  pg.drawFunc(draw);
+
+  pg.listen();
 }

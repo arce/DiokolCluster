@@ -10,12 +10,12 @@
 
 float r = 8;
 
+p5d::PGraphics pg("localhost", "8888");
+
 int main(int argc, char** argv) {
 
 	int width = 480;
 	int height = 270;
-	
-	p5d::p5DGraphics pg;
 	
     pg.size(width, height);
 

@@ -8,7 +8,12 @@
 
 float r = 8;
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
+
+void setup() {
+  pg.size(200, 200);
+  pg.frameRate(10);
+}
 
 void draw() {
   pg.background(255);
@@ -17,20 +22,20 @@ void draw() {
   pg.stroke(0);
   pg.fill(175);
   pg.rectMode(pg.CENTER);
-  pg.rect(p5_width/2, pg.height/2, r, r);
+  pg.rect(p5_width / 2, pg.height / 2, r, r);
 
   // Increase the rectangle size
-  r++ ;
+  r++;
 
   // Start rectangle over
   if (r > pg.width) {
-	r = 0;
+    r = 0;
   }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
-  pg.size(200, 200);
-  pg.frameRate(10);
+
   pg.listen();
 }

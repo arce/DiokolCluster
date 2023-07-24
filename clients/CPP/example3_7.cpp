@@ -6,14 +6,13 @@
 
 // Example 3-7: Translated zoog
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 void setup() {
   pg.size(480, 270);
 }
 
 void draw() {
-  pg.clear(); // needed by p5Display
   pg.background(255);
   pg.rectMode(pg.CENTER);
   pg.ellipseMode(pg.CENTER);
@@ -43,9 +42,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
-  
-  setup();
   
   pg.listen();
 }

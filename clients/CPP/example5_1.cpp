@@ -6,7 +6,7 @@
 
 // Example 5-1: Conditionals
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 // Variables
 float r = 150;
@@ -41,8 +41,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
-  setup();
   
   pg.listen();
 }

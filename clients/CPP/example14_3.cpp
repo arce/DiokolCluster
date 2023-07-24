@@ -9,7 +9,12 @@
 // A variable for the Z (depth) coordinate
 
 float z = 0;
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
+
+void setup() {
+  pg.size(200, 200);
+  pg.frameRate(10);
+}
 
 void draw() {
   pg.background(255);
@@ -17,9 +22,9 @@ void draw() {
   pg.fill(175);
 
   // Translate to a point before displaying a shape there
-  //p5_translate3d(p5_width/2, p5_height/2, z);
+  // p5_translate3d(p5_width/2, p5_height/2, z);
   pg.rectMode(pg.CENTER);
-  pg.rect(0, 0, 8, 8); 
+  pg.rect(0, 0, 8, 8);
 
   // Increment z (i.e. move the shape toward the viewer)
   z += 2;
@@ -30,11 +35,9 @@ void draw() {
   }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
-  pg.size(200, 200);
-  pg.frameRate(10);
-  
   pg.listen();
 }

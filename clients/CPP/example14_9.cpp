@@ -7,24 +7,27 @@
 // Example 14-9: Rotate around more than one axis
 float theta = 0.0;
 
+p5d::PGraphics pg("localhost", "8888");
+
 void setup() {
-  p5_size(480, 240);
-  p5_frameRate(10);
+  pg.size(480, 240);
+  pg.frameRate(10);
 }
 
 void draw() {
-    p5_background(255);
-    p5_stroke(0);
-    p5_fill(175);
-	p5_translate(p5_width/2, p5_height/2);
+    pg.background(255);
+    pg.stroke(0);
+    pg.fill(175);
+	pg.translate(pg.width/2, pg.height/2);
 	//p5_rotateX(p5_map(p5_mouseY, 0, p5_height, 0, P5_TWO_PI));
 	//p5_rotateY(p5_map(p5_mouseX, 0, p5_width, 0, P5_TWO_PI));
-	p5_rectMode(P5_CENTER);
-	p5_rect(0, 0, 200, 150);
+	pg.rectMode(pg.CENTER);
+	pg.rect(0, 0, 200, 150);
 }
 
 int main(int argc, char** argv) {
-  p5_setupFunc(setup);
-  p5_drawFunc(draw);
-  p5_init(argc,argv);
+  pg.setupFunc(setup);
+  pg.drawFunc(draw);
+
+  pg.listen();
 }

@@ -6,7 +6,7 @@
 
 // Example 4-6: Ellipse with variables
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 // Declare and initialize your variables!
 float r = 100;
@@ -31,8 +31,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	pg.setupFunc(setup);
 	pg.drawFunc(draw);
-	setup();
 
 	pg.listen();
 }

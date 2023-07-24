@@ -6,10 +6,14 @@
 
 // Example 2-1: Zoog again
 
-int main(int argc, char** argv) {
-	p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
-	pg.size(480, 270);
+void setup() {
+	pg.size(480, 270);	
+}
+
+void draw() {
+
 	pg.background(255);
 	pg.ellipseMode(pg.CENTER);
 	pg.rectMode(pg.CENTER); 
@@ -33,5 +37,10 @@ int main(int argc, char** argv) {
 	pg.line(230, 195, 220, 205);
 	pg.line(250, 195, 260, 205);
 	
+}
+
+int main(int argc, char **argv) {
+	pg.setupFunc(setup);
+	pg.drawFunc(draw);
 	pg.listen();
 }

@@ -1,4 +1,4 @@
-#include "p5lib.h"
+#include "p5d.h"
 
 // Learning Processing
 // Daniel Shiffman
@@ -10,24 +10,28 @@
 
 //PFont f;
 
+p5d::PGraphics pg("localhost", "8888");
+
 void setup() {
-  p5_size(640, 480);
+  pg.size(480, 270);
+  pg.frameRate(10);
 
   // Step 3: Create Font
   //f = createFont("Arial", 16);
 }
 
 void draw() {
-  p5_background(255);
-  p5_textSize(16); //textFont(f, 16); // Step 4: Specify font to be used
-  p5_fill(0);         // Step 5: Specify font color
+  pg.background(255);
+  pg.textSize(16); //textFont(f, 16); // Step 4: Specify font to be used
+  pg.fill(0);         // Step 5: Specify font color
 
   // Step 6: Display Text
-  p5_text("Mmmmm ... Strings ...", 10, p5_height/2);
+  pg.text("Mmmmm ... Strings ...", 10, pg.height/2);
 }
 
-int main(int argc, char** argv) {
-  p5_setupFunc(setup);
-  p5_drawFunc(draw);
-  p5_init(argc,argv);
+int main(int argc, char **argv) {
+  pg.setupFunc(setup);
+  pg.drawFunc(draw);
+
+  pg.listen();
 }

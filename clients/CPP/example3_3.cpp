@@ -6,13 +6,14 @@
 
 // Example 3-3: Zoog as dynamic sketch with variation
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 void setup() {
-  pg.size(480, 270);  // Set the size of the window
+	pg.size(480, 270);
 }
 
 void draw() {
+
   pg.background(255);  // Draw a white background 
 
   // Set ellipses and rects to CENTER mode
@@ -29,7 +30,7 @@ void draw() {
   pg.stroke(0);
   pg.fill(255);
   // Zoog's head is drawn above the body at the location (mouseX, mouseY - 30).
-  pg.ellipse(pg.mouseX, pg.mouseY-30, 60, 60); 
+  pg.ellipse(pg.mouseX, pg.mouseY-30, 60, 60);
 
   // Eyes
   pg.fill(0); 
@@ -43,9 +44,8 @@ void draw() {
 }
 
 int main(int argc, char **argv) {
-  
-  pg.drawFunc(draw);
-  
-  setup();
-  pg.listen();
+
+	pg.setupFunc(setup);
+	pg.drawFunc(draw);
+	pg.listen();
 }

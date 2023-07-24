@@ -21,7 +21,7 @@ float eyeR;
 float eyeG;
 float eyeB;
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 void setup() {
   // Set the size of the window
@@ -75,8 +75,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	pg.setupFunc(setup);
 	pg.drawFunc(draw);
-	setup();
 	
 	pg.listen();
 }

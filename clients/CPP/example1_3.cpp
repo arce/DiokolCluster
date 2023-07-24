@@ -1,30 +1,37 @@
 #include "p5d.h"
-//using namespace p5d;
+// using namespace p5d;
 
-  // Learning Processing
-  // Daniel Shiffman
-  // http://www.learningprocessing.com
+// Learning Processing
+// Daniel Shiffman
+// http://www.learningprocessing.com
 
-  // Example 1-3: RGB Color
+// Example 1-3: RGB Color
 
-int main(int argc, char** argv) {
+p5d::PGraphics pg("localhost","8888");
 
-	p5d::p5DGraphics pg;
-	
-	pg.background(255);    
+void setup() {
+}
+
+void draw() {
+  pg.background(255,255,255,255);
+
 	pg.noStroke();
 
-    // Bright red
-    pg.fill(255,0,0);
-    pg.ellipse(20,20,16,16);
+  // Bright red
+  pg.fill(255, 0, 0, 255);
+  pg.ellipse(20, 20, 16, 16);
 
-    // Dark red
-    pg.fill(127,0,0);
-    pg.ellipse(40,20,16,16);
+  // Dark red
+  pg.fill(0, 255, 0 , 255);
+  pg.ellipse(40, 20, 16, 16);
 
-    // Pink (pale red)
-    pg.fill(255,200,200);
-    pg.ellipse(60,20,16,16);
-	
+  // Pink (pale red)
+  pg.fill(0, 0, 255, 255);
+  pg.ellipse(60, 20, 16, 16);	
+}
+
+int main(int argc, char **argv) {
+	pg.setupFunc(setup);
+	pg.drawFunc(draw);
 	pg.listen();
 }

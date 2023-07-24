@@ -6,7 +6,13 @@
 
 // Example 14-5: Rectangle rotating around center
 
-p5d::p5DGraphics pg;
+
+p5d::PGraphics pg("localhost", "8888");
+
+void setup() {
+  pg.size(200, 200);
+  pg.frameRate(10);
+}
 
 void draw() {
 	pg.background(255);  
@@ -30,10 +36,8 @@ void draw() {
 
 int main(int argc, char** argv) {
 
-  pg.drawFunc(draw);
-  
-  pg.size(200, 200);
-  pg.frameRate(10);
+  pg.setupFunc(setup);
+	pg.drawFunc(draw);
   
   pg.listen();
 }

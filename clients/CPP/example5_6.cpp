@@ -6,7 +6,7 @@
 
 // Example 5-6: Bouncing Ball
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 int x = 0;
 int speed = 2;
@@ -34,8 +34,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+
+	pg.setupFunc(setup);
   pg.drawFunc(draw);
-  setup();
   
-  pg.listen();
+	pg.listen();
 }

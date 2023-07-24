@@ -6,7 +6,7 @@
 
 // Example 5-9: Simple Gravity
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 float x = 320;   // x location of square
 float y = 0;     // y location of square
@@ -48,8 +48,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
-  pg.drawFunc(draw);
-  setup();
+  
+	pg.setupFunc(setup);
+	pg.drawFunc(draw);
   
   pg.listen();
 }

@@ -8,7 +8,7 @@ using namespace std;
 
 // Example 4-5: Using system variables
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 void setup() {
   pg.size(480, 270);
@@ -29,10 +29,10 @@ void keyPressed() {
   cout<<pg.key<<endl;
 }
 
-int main(int argc, char** argv) {  
+int main(int argc, char** argv) {
+	pg.setupFunc(draw);
 	pg.drawFunc(draw);
 	pg.keyPressedFunc(keyPressed);
-    setup();
 	
 	pg.listen();
 }

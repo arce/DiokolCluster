@@ -6,7 +6,7 @@
 
 // Example 5-10: Zoog and conditionals
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 float x = 100;
 float y = 100;
@@ -63,6 +63,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	
+		pg.setupFunc(setup);
   pg.drawFunc(draw);
   setup();
   

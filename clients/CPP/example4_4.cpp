@@ -6,7 +6,7 @@
 
 // Example 4-4: Many variables
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost","8888");
 
 // We've got 8 variables now!  All  of type float.
 float circleX = 0;
@@ -42,8 +42,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	pg.setupFunc(setup);
 	pg.drawFunc(draw);
-	setup();
 	
 	pg.listen();
 }

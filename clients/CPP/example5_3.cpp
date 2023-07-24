@@ -6,7 +6,7 @@
 
 // Example 5-3: Rollovers
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 void setup() {
   pg.size(480, 270);
@@ -35,8 +35,8 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	pg.setupFunc(setup);
 	pg.drawFunc(draw);
-	setup();
 
 	pg.listen();
 }

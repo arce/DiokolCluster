@@ -6,7 +6,7 @@
 
 // Example 5-7: "Bouncing" color
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("localhost", "8888");
 
 // Two variables for color.
 float c1 = 0;
@@ -51,8 +51,9 @@ void draw() {
 }
 
 int main(int argc, char** argv) {
+	
+	pg.setupFunc(setup);
   pg.drawFunc(draw);
-  setup();
   
   pg.listen();
 }

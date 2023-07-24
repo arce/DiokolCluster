@@ -6,7 +6,7 @@
 
 // Example 3-5: mousePressed and keyPressed
 
-p5d::p5DGraphics pg;
+p5d::PGraphics pg("192.168.0.29", "8888");
 
 void setup() {
   pg.size(480, 270);
@@ -17,7 +17,8 @@ void draw() {
   // Nothing happens in draw() in this example!
 }
 
-// Whenever a user clicks the mouse the code written inside mousePressed() is executepg.
+// Whenever a user clicks the mouse the code written inside mousePressed() is
+// executepg.
 void mousePressed() {
   pg.stroke(0);
   pg.fill(175);
@@ -25,18 +26,16 @@ void mousePressed() {
   pg.rect(pg.mouseX, pg.mouseY, 16, 16);
 }
 
-// Whenever a user presses a key the code written inside keyPressed() is executepg.
-void keyPressed() {
-  pg.background(255);
-}
+// Whenever a user presses a key the code written inside keyPressed() is
+// executepg.
+void keyPressed() { pg.background(255); }
 
-int main(int argc, char** argv) {
-	
+int main(int argc, char **argv) {
+
+  pg.setupFunc(setup);
   pg.drawFunc(draw);
   pg.mousePressedFunc(mousePressed);
   pg.keyPressedFunc(keyPressed);
-    
-  setup();
 
   pg.listen();
 }
