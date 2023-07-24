@@ -1,3 +1,5 @@
+CC = gcc
+
 all: rmchat
 
 rmchat: rmchat.o librmcast.a
@@ -22,13 +24,13 @@ rmmsgpckt.o: rmmsgpckt.c rmmsgpckt.h
 	gcc -O -c rmmsgpckt.c
 	
 rmtcp.o: rmtcp.c rmtcp.h
-		gcc -O -c rmtcp.c
+	gcc -O -c rmtcp.c
 		
 rmwinmask.o: rmwinmask.c rmwinmask.h
-		gcc -O -c rmwinmask.c
+	gcc -O -c rmwinmask.c
 		
 rmwcast.o: rmwcast.c rmwcast.h
-		gcc -O -c rmwcast.c
+	gcc -O -c rmwcast.c
 		
 librmcast.a: rmcache.o rmevent.o rminternals.o rmmsg.o rmmsgpckt.o rmtcp.o rmwinmask.o rmcast.o
 	ar rcs librmcast.a rmcache.o rmevent.o rminternals.o rmmsg.o rmmsgpckt.o rmtcp.o rmwinmask.o rmcast.o

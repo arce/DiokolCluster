@@ -239,7 +239,7 @@ class PGraphics {
 	                     hints;
 						 
 	  DEFAULT_PORT = "9555";
-	  DEFAULT_HOST = "localhost";
+	  DEFAULT_HOST = "192.168.0.29";
 	  mousePressedDef=0;
 	  keyPressedDef=0;
 	  mouseMovedDef=0;

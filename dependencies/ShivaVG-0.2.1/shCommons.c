@@ -48,3 +48,27 @@ shDrawQuadsArray(GLfloat v[8])
       glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
       glDisableClientState(GL_VERTEX_ARRAY);
 }
+
+inline void vgSetColor(VGPaint paint, VGuint rgba) {
+  VGfloat rgba_f[4];
+  rgba_f[0] = ((rgba >> 24) & 0xff)/255.0f;
+  rgba_f[1] = ((rgba >> 16) & 0xff)/255.0f;
+  rgba_f[2] = ((rgba >>  8) & 0xff)/255.0f;
+  rgba_f[3] = ( rgba        & 0xff)/255.0f;
+  vgSetParameterfv(paint, VG_PAINT_COLOR, 4, rgba_f);
+}
+
+#define CLAMP(x) ((x) < 0.0f ? 0.0f : ((x) > 1.0f ? 1.0f : (x)))
+    
+inline VGuint vgGetColor(VGPaint paint) {
+  VGuint rgba;
+  VGfloat rgba_f[4];
+  int red, green, blue, alpha;
+  vgGetParameterfv(paint, VG_PAINT_COLOR, 4, rgba_f);
+  red   = (int)(CLAMP(rgba_f[0])*255.0f + 0.5f);
+  green = (int)(CLAMP(rgba_f[1])*255.0f + 0.5f);
+  blue  = (int)(CLAMP(rgba_f[2])*255.0f + 0.5f);
+  alpha = (int)(CLAMP(rgba_f[3])*255.0f + 0.5f);
+  rgba = (red << 24) | (green << 16) | (blue << 8) | alpha;
+  return rgba;
+}
